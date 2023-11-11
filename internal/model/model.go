@@ -17,3 +17,10 @@ type Document struct {
 }
 
 type TaskList []Task
+
+func (tasklist *TaskList) AddTask(description string) (TaskList, error) {
+	*tasklist = append(*tasklist, Task{
+		Description: description,
+	})
+	return *tasklist, nil
+}
