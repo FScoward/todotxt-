@@ -53,9 +53,6 @@ func parseTasks(lines []string) ([]model.Task, error) {
 	for _, line := range lines {
 		trimmedLine := strings.TrimSpace(line)
 		// インデントレベルに基づいて現在のタスクリストを調整
-		// if lastIndentLevel < len(taskStack) {
-		// 	taskStack = taskStack[:lastIndentLevel+1]
-		// }
 		currentTasks = taskStack[lastIndentLevel]
 
 		// タスクまたはサブタスクの行を解析
@@ -74,32 +71,20 @@ func parseTasks(lines []string) ([]model.Task, error) {
 
 			// インデントが下がっているのであればSubTaskへの追加
 			if lastIndentLevel < indentLevel {
-				// parentTask := &tasks[len(tasks)-1]
 				parentTask := &(*currentTasks)[lastIndentLevel]
 				parentTask.SubTasks = append(parentTask.SubTasks, newTask)
 			} else {
 				*currentTasks = append(*currentTasks, newTask)
 			}
 
-			// TODO 現在位置の修正（現在取り扱っているタスクのルートの再設定）
-
-			// *currentTasks = append(*currentTasks, newTask)
-
 			// タスクスタックを更新
 			taskStack[lastIndentLevel] = currentTasks
-			// if len(taskStack) > indentLevel+1 {
-			// 	taskStack[indentLevel+1] = &(*currentTasks)[len(*currentTasks)-1].SubTasks
-			// } else {
-			// 	taskStack = append(taskStack, &(*currentTasks)[len(*currentTasks)-1].SubTasks)
-			// }
 
 			currentTask = newTask
-			// lastIndentLevel = indentLevel
 		} else if strings.HasPrefix(line, "\t") {
 			// タスクの詳細情報を解析
 			parts := strings.SplitN(trimmedLine, ": ", 2)
 			if len(parts) == 2 {
-				// currentTask := &(*currentTasks)[lastIndentLevel]
 				currentTask.Details[parts[0]] = parts[1]
 			}
 		}
