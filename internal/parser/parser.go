@@ -40,13 +40,13 @@ func parseMetadata(lines []string) (model.Metadata, error) {
 }
 
 func parseTasks(lines []string) ([]model.Task, error) {
-	var tasks []model.Task
+	var tasks model.TaskList
 	// 現在処理中のタスクのリスト
-	var currentTasks *[]model.Task = &tasks
+	var currentTasks *model.TaskList = &tasks
 	var currentTask model.Task
 
 	// タスクの階層構造の管理。全てのタスクを階層構造で持つ。
-	taskStack := []*[]model.Task{currentTasks}
+	taskStack := []*model.TaskList{currentTasks}
 
 	lastIndentLevel := 0
 

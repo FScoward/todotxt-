@@ -15,3 +15,5 @@ type Document struct {
 	Logs     []string
 	// その他のフィールド
 }
+
+type TaskList []Task
