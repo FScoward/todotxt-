@@ -1,8 +1,13 @@
 package model
 
+import (
+	"github.com/oklog/ulid/v2"
+)
+
 type Metadata map[string]string
 
 type Task struct {
+	ID          ulid.ULID
 	Description string
 	Status      string
 	SubTasks    []Task
@@ -18,8 +23,10 @@ type Document struct {
 
 type TaskList []Task
 
-func (tasklist *TaskList) AddTask(description string) (TaskList, error) {
+func (tasklist *TaskList) AddTask(ulid ulid.ULID, description string) (TaskList, error) {
 	*tasklist = append(*tasklist, Task{
+		ID:          ulid,
+		Status:      "TODO",
 		Description: description,
 	})
 	return *tasklist, nil
