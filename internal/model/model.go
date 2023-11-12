@@ -12,6 +12,7 @@ type Task struct {
 	Status      string
 	SubTasks    []Task
 	Details     map[string]string
+	// TODO 作成日時
 }
 
 type Document struct {
@@ -30,4 +31,16 @@ func (tasklist *TaskList) AddTask(ulid ulid.ULID, description string) (TaskList,
 		Description: description,
 	})
 	return *tasklist, nil
+}
+
+func (task *Task) AddSubTask(targetTaskId ulid.ULID, description string) (Task, error) {
+
+	newSubTask := Task{
+		ID:          ulid.Make(),
+		Status:      "TODO",
+		Description: description,
+	}
+
+	task.SubTasks = append(task.SubTasks, newSubTask)
+	return *task, nil
 }

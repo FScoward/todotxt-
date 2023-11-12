@@ -7,6 +7,7 @@ import (
 	"todotxtplus/internal/model"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/oklog/ulid/v2"
 )
 
@@ -72,4 +73,53 @@ func TestAddTaskToExistingTasks(t *testing.T) {
 	if diff := cmp.Diff(actual, expected); diff != "" {
 		t.Errorf("%s", diff)
 	}
+}
+
+// 特定のタスクにサブタスクを追加する
+func TestAddSubTask(t *testing.T) {
+	// expected := model.TaskList{
+	// 	{
+	// 		ID:          fixedULID(),
+	// 		Status:      "TODO",
+	// 		Description: "abced",
+	// 		SubTasks: []model.Task{{
+	// 			ID:          fixedULID(),
+	// 			Status:      "TODO",
+	// 			Description: "abced",
+	// 		}},
+	// 	},
+	// }
+	taskID := ulid.Make()
+
+	task := model.Task{
+		ID:          taskID,
+		Status:      "TODO",
+		Description: "abcde",
+	}
+
+	expected := model.Task{
+		ID:          taskID,
+		Status:      "TODO",
+		Description: "abcde",
+		SubTasks: []model.Task{{
+			ID:          fixedULID(),
+			Status:      "TODO",
+			Description: "sub task",
+		}},
+	}
+
+	// 追加するタスクIDを指定する
+	actual, err := task.AddSubTask(
+		taskID,
+		"sub task",
+	)
+
+	if err != nil {
+		t.Errorf("addTask returned an error: %v", err)
+	}
+
+	if diff := cmp.Diff(actual, expected, cmpopts.IgnoreFields(model.Task{}, "ID")); diff != "" {
+		t.Errorf("%s", diff)
+	}
+
 }
